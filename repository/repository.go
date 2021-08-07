@@ -17,7 +17,7 @@ type Repository interface {
 }
 
 type Embed struct {
-	data []Product
+	data map[int]Product
 }
 
 func NewEmbedRepository() (Repository, error) {
@@ -27,32 +27,40 @@ func NewEmbedRepository() (Repository, error) {
 		return nil, errors.ErrFailedLoadingRepository(err)
 	}
 
+	productMap := map[int]Product{}
+
+	for _, p := range products {
+		productMap[p.Id] = p
+	}
+
 	return Embed{
-		data: products,
+		data: productMap,
 	}, nil
 }
 
 func (repo Embed) GetProduct(id int) (*Product, error) {
-	for i := range repo.data {
-		product := repo.data[i]
-
-		if product.Id == id {
-			return &product, nil
-		}
+	product, ok := repo.data[id]
+	if !ok {
+		return nil, errors.ErrInvalidProductId(id)
 	}
 
-	return nil, errors.ErrInvalidProductId
+	return &product, nil
 }
 
 func (repo Embed) GetAllProducts() (*[]Product, error) {
-	return &repo.data, nil
+	var products []Product
+
+	for _, p := range repo.data {
+		products = append(products, p)
+	}
+
+	return &products, nil
 }
 
 func (repo Embed) GetRandomGift() (*Product, error) {
-	for i := range repo.data {
-		product := repo.data[i]
-		if product.Gift {
-			return &product, nil
+	for _, p := range repo.data {
+		if p.Gift {
+			return &p, nil
 		}
 	}
 

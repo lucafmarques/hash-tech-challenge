@@ -6,9 +6,12 @@ import (
 )
 
 var (
-	ErrInvalidProductId = errors.New("no product with that ID exists")
-	ErrNoGiftAvailable  = errors.New("no random gift available")
+	ErrNoGiftAvailable = errors.New("no random gift available")
 )
+
+func ErrInvalidProductId(id int) error {
+	return fmt.Errorf("no product with ID=%v exists", id)
+}
 
 func ErrFailedLoadingRepository(err error) error {
 	return fmt.Errorf("failed loading data into repository: %w", err)
