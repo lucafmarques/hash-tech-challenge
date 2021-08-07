@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"gitlab.com/lucafmarques/hash-test/auth"
+	"gitlab.com/lucafmarques/hash-test/checkout"
 	"gitlab.com/lucafmarques/hash-test/discount"
 	"gitlab.com/lucafmarques/hash-test/repository"
 	"google.golang.org/grpc"
@@ -39,7 +40,7 @@ func main() {
 		log.Fatalf("Failed loading service repository: %s", err)
 	}
 
-	svc := NewCheckoutService(*server, client, repo)
+	svc := checkout.NewCheckoutService(*server, client, repo)
 	defer svc.Stop()
 
 	svc.ApplyMiddlewares(middleware.Logger(), middleware.Recover(), auth.AuthMiddleware())

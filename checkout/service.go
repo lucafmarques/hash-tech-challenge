@@ -1,4 +1,4 @@
-package main
+package checkout
 
 import (
 	"context"
@@ -20,12 +20,10 @@ type Service struct {
 }
 
 func NewCheckoutService(server echo.Echo, client discount.DiscountClient, repo repository.Repository) *Service {
-	server.Logger = log.New("checkout")
-
 	server.HideBanner = true
 	server.HidePort = true
 
-	server.Logger.Info("Starting checkout server")
+	log.Info("Starting checkout server")
 
 	return &Service{
 		Server:         server,
@@ -56,7 +54,6 @@ func (svc *Service) Stop() {
 }
 
 func (svc *Service) RegisterRoutes() {
-	svc.Server.GET("/hello", svc.HandleHello)
 	svc.Server.GET("/products", svc.GetAllProducts)
 	svc.Server.GET("/discount/:id", svc.GetProductDiscount)
 	svc.Server.POST("/checkout", svc.PostCheckout)
