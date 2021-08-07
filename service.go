@@ -10,18 +10,16 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"gitlab.com/lucafmarques/hash-test/discount"
-	"google.golang.org/grpc"
+	"gitlab.com/lucafmarques/hash-test/repository"
 )
 
 type Service struct {
-	Server         *echo.Echo
+	Server         echo.Echo
 	DiscountClient discount.DiscountClient
+	Repository     repository.Repository
 }
 
-func NewCheckoutService(conn *grpc.ClientConn) *Service {
-	server := echo.New()
-	client := discount.NewDiscountClient(conn)
-
+func NewCheckoutService(server echo.Echo, client discount.DiscountClient, repo repository.Repository) *Service {
 	server.Logger = log.New("checkout")
 
 	server.HideBanner = true
@@ -32,6 +30,7 @@ func NewCheckoutService(conn *grpc.ClientConn) *Service {
 	return &Service{
 		Server:         server,
 		DiscountClient: client,
+		Repository:     repo,
 	}
 }
 
@@ -60,6 +59,7 @@ func (svc *Service) RegisterRoutes() {
 	svc.Server.GET("/hello", svc.HandleHello)
 	svc.Server.GET("/products", svc.GetAllProducts)
 	svc.Server.GET("/discount/:id", svc.GetProductDiscount)
+	svc.Server.POST("/checkout", svc.PostCheckout)
 }
 
 func (svc *Service) ApplyMiddlewares(middewares ...echo.MiddlewareFunc) {
