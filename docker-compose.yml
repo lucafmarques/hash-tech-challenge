@@ -9,4 +9,5 @@ services:
     ports: 
       - "8080:8080"
     environment: 
-      API_KEYS: "TEST,TESTA"
+      API_KEYS: "b6346fc6-a385-4c93-aa98-8c50eac12974"
+      BLACK_FRIDAY_DATE: "2021-08-07"
