@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"encoding/json"
 
+	"github.com/labstack/gommon/log"
 	"gitlab.com/lucafmarques/hash-test/config"
 	"gitlab.com/lucafmarques/hash-test/errors"
 )
@@ -15,6 +16,7 @@ type Repository interface {
 	GetProduct(id int) (*Product, error)
 	GetRandomGift() (*Product, error)
 	GetAllProducts() (*[]Product, error)
+	GetProductsById(ids []int) map[int]*Product
 }
 
 type Embed struct {
@@ -32,13 +34,29 @@ func NewEmbedRepository(config config.RepositoryConfig) (Repository, error) {
 	productMap := map[int]Product{}
 
 	for _, p := range products {
-		productMap[p.Id] = p
+		productMap[p.ID] = p
 	}
 
 	return Embed{
 		data:   productMap,
 		Config: config,
 	}, nil
+}
+
+func (repo Embed) GetProductsById(ids []int) map[int]*Product {
+	products := map[int]*Product{}
+
+	for _, id := range ids {
+		product, ok := repo.data[id]
+		if !ok {
+			log.Infof("failed fetching data for product with ID=%v", id)
+			continue
+		}
+
+		products[id] = &product
+	}
+
+	return products
 }
 
 func (repo Embed) GetProduct(id int) (*Product, error) {
