@@ -1,21 +1,14 @@
 package main
 
 import (
-	"context"
 	_ "embed"
 	"log"
-	"time"
 
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"gitlab.com/lucafmarques/hash-test/checkout"
+	"gitlab.com/lucafmarques/hash-test/config"
 	"gitlab.com/lucafmarques/hash-test/discount"
 	"gitlab.com/lucafmarques/hash-test/repository"
-	"google.golang.org/grpc"
-)
-
-var (
-	discountServerAddr = "discount:50051"
 )
 
 // @title Hash's Checkout API
@@ -26,33 +19,26 @@ var (
 // @license.name MIT
 
 func main() {
-	config := &Config{}
+	config := &config.Config{}
 	err := config.LoadFromEnv("CONFIG_PATH", "config.yaml")
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
-
-	grpcOpts := []grpc.DialOption{
-		grpc.WithInsecure(), grpc.WithBlock(),
-	}
-
-	conn, err := grpc.DialContext(ctx, discountServerAddr, grpcOpts...)
+	conn, cancel, err := discount.NewDiscountConn(config.Discount)
 	if err != nil {
-		log.Fatalf("fail to dial: %v", err)
+		log.Fatalf("failed creating discount grpc conn: %v", err)
 	}
 	defer conn.Close()
+	defer cancel()
 
-	server := echo.New()
-	client := discount.NewDiscountClient(conn)
-	repo, err := repository.NewEmbedRepository()
+	repo, err := repository.NewEmbedRepository(config.Repository)
 	if err != nil {
 		log.Fatalf("failed loading service repository: %s", err)
 	}
 
-	svc := checkout.NewCheckoutService(*server, client, repo)
+	client := discount.NewDiscountClient(conn)
+	svc := checkout.NewCheckoutService(config.Service, client, repo)
 	defer svc.Stop()
 
 	svc.ApplyMiddlewares(middleware.Logger(), middleware.Recover())
