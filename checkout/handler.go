@@ -90,7 +90,7 @@ func (svc *Service) PostCheckout(c echo.Context) error {
 		response.Products = append(response.Products, *productResponse)
 	}
 
-	gift, ok := BlackFridayGift(svc.Repository)
+	gift, ok := svc.BlackFridayGift()
 	if ok {
 		response.Products = append(response.Products, *gift)
 	}

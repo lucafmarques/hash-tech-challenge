@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"encoding/json"
 
+	"gitlab.com/lucafmarques/hash-test/config"
 	"gitlab.com/lucafmarques/hash-test/errors"
 )
 
@@ -17,10 +18,11 @@ type Repository interface {
 }
 
 type Embed struct {
-	data map[int]Product
+	data   map[int]Product
+	Config config.RepositoryConfig
 }
 
-func NewEmbedRepository() (Repository, error) {
+func NewEmbedRepository(config config.RepositoryConfig) (Repository, error) {
 	var products []Product
 	err := json.Unmarshal(data, &products)
 	if err != nil {
@@ -34,7 +36,8 @@ func NewEmbedRepository() (Repository, error) {
 	}
 
 	return Embed{
-		data: productMap,
+		data:   productMap,
+		Config: config,
 	}, nil
 }
 

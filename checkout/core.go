@@ -1,7 +1,6 @@
 package checkout
 
 import (
-	"os"
 	"time"
 
 	"github.com/labstack/gommon/log"
@@ -23,15 +22,13 @@ func NewProductResponse(productData *repository.Product, productRequest ProductR
 	}
 }
 
-func BlackFridayGift(repo repository.Repository) (*ProductResponse, bool) {
-	date := os.Getenv("BLACK_FRIDAY_DATE")
-
-	ok := date == time.Now().Format("2006-01-02")
+func (svc *Service) BlackFridayGift() (*ProductResponse, bool) {
+	ok := svc.Config.Rules.BlackFridayDate == time.Now().Format("01/02")
 	if !ok {
 		return nil, false
 	}
 
-	gift, err := repo.GetRandomGift()
+	gift, err := svc.Repository.GetRandomGift()
 	if err != nil {
 		log.Warnf("Failed requesting gift from repository: %v", err)
 		return nil, false

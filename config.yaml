@@ -1,12 +1,10 @@
-server:
-  host: localhost:8080
+service:
+  port: :8080
   timeout: 10
-  discount_host: discount:8080
+  rules:
+    black_friday_date: 08/08
 
-discount_service:
-  insecure: true
-  cert_path: "../credentials/localhost.crt"
-  key_path: "../credentials/localhost.key"
+discount:
+  host: discount:50051
+  timeout: 10
 
-rules:
-  black_friday_date: 25/11
