@@ -64,10 +64,14 @@ func (svc *Service) PostCheckout(c echo.Context) error {
 		Products: []ProductResponse{},
 	}
 
+	ids := BuildIdsList(data.Products)
+
+	productsData := svc.Repository.GetProductsById(ids)
+
 	for _, productRequest := range data.Products {
-		productData, err := svc.Repository.GetProduct(productRequest.ID)
-		if err != nil {
-			log.Warnf("Failed requesting product from repository: %v", err)
+		productData, ok := productsData[productRequest.ID]
+		if !ok {
+			log.Warnf("no product data exists for ID=%v", productRequest.ID)
 			continue
 		}
 
@@ -90,7 +94,7 @@ func (svc *Service) PostCheckout(c echo.Context) error {
 		response.Products = append(response.Products, *productResponse)
 	}
 
-	gift, ok := svc.BlackFridayGift()
+	gift, ok := BlackFridayGift(svc.Config.Rules.BlackFridayDate, svc.Repository)
 	if ok {
 		response.Products = append(response.Products, *gift)
 	}
