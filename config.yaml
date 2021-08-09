@@ -1,7 +1,7 @@
 service:
   port: :8080
   timeout: 10
-  rules:
+  core:
     black_friday_date: 08/08
 
 discount:

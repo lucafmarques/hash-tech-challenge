@@ -9,13 +9,13 @@ import (
 )
 
 type ServiceConfig struct {
-	Port        string      `yaml:"port,omitempty"`
-	Timeout     int         `yaml:"timeout,omitempty"`
-	Environment string      `yaml:"mode,omitempty"`
-	Rules       RulesConfig `yaml:"rules,omitempty"`
+	Port        string     `yaml:"port,omitempty"`
+	Timeout     int        `yaml:"timeout,omitempty"`
+	Environment string     `yaml:"mode,omitempty"`
+	Core        CoreConfig `yaml:"core,omitempty"`
 }
 
-type RulesConfig struct {
+type CoreConfig struct {
 	BlackFridayDate string `yaml:"black_friday_date,omitempty"`
 }
 
@@ -31,7 +31,6 @@ type RepositoryConfig struct {
 type Config struct {
 	Service    ServiceConfig    `yaml:"service,omitempty"`
 	Discount   DiscountConfig   `yaml:"discount,omitempty"`
-	Rules      RulesConfig      `yaml:"rules,omitempty"`
 	Repository RepositoryConfig `yaml:"repository,omitempty"`
 }
 
