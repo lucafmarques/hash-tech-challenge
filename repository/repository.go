@@ -3,8 +3,9 @@ package repository
 import (
 	_ "embed"
 	"encoding/json"
+	"fmt"
+	"strings"
 
-	"github.com/labstack/gommon/log"
 	"gitlab.com/lucafmarques/hash-test/config"
 	"gitlab.com/lucafmarques/hash-test/errors"
 )
@@ -16,7 +17,7 @@ type Repository interface {
 	GetProduct(id int) (*Product, error)
 	GetRandomGift() (*Product, error)
 	GetAllProducts() (*[]Product, error)
-	GetProductsById(ids []int) map[int]*Product
+	GetProductsByIds(ids []int) (map[int]*Product, error)
 }
 
 type Embed struct {
@@ -43,20 +44,25 @@ func NewEmbedRepository(config config.RepositoryConfig) (Repository, error) {
 	}, nil
 }
 
-func (repo Embed) GetProductsById(ids []int) map[int]*Product {
+func (repo Embed) GetProductsByIds(ids []int) (map[int]*Product, error) {
+	var errors []string
 	products := map[int]*Product{}
 
 	for _, id := range ids {
-		product, ok := repo.data[id]
-		if !ok {
-			log.Infof("failed fetching data for product with ID=%v", id)
+		product, err := repo.GetProduct(id)
+		if err != nil {
+			errors = append(errors, err.Error())
 			continue
 		}
 
-		products[id] = &product
+		products[id] = product
 	}
 
-	return products
+	if len(errors) > 0 {
+		return products, fmt.Errorf("failed getting some products: %v", strings.Join(errors, ", "))
+	}
+
+	return products, nil
 }
 
 func (repo Embed) GetProduct(id int) (*Product, error) {
@@ -79,6 +85,9 @@ func (repo Embed) GetAllProducts() (*[]Product, error) {
 }
 
 func (repo Embed) GetRandomGift() (*Product, error) {
+	// This implementation is semi-random, because for Embed's Repository
+	// implementation, data is stored in a map which has semi-random
+	// access, not preserving order when being iterated over.
 	for _, p := range repo.data {
 		if p.Gift {
 			return &p, nil
