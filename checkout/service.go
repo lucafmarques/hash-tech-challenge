@@ -24,10 +24,9 @@ var ALLOW_DOCS_MODES = map[string]bool{
 }
 
 type Service struct {
-	Server         echo.Echo
-	DiscountClient discount.DiscountClient
-	Repository     repository.Repository
-	Config         config.ServiceConfig
+	Server echo.Echo
+	Core   Core
+	Config config.ServiceConfig
 }
 
 func NewCheckoutService(config config.ServiceConfig, client discount.DiscountClient, repo repository.Repository) *Service {
@@ -45,10 +44,13 @@ func NewCheckoutService(config config.ServiceConfig, client discount.DiscountCli
 	}
 
 	return &Service{
-		Server:         *server,
-		DiscountClient: client,
-		Repository:     repo,
-		Config:         config,
+		Server: *server,
+		Core: Core{
+			Client:     client,
+			Repository: repo,
+			Config:     config.Core,
+		},
+		Config: config,
 	}
 }
 
@@ -78,8 +80,6 @@ func (svc *Service) Stop() {
 }
 
 func (svc *Service) RegisterRoutes() {
-	svc.Server.GET("/products", svc.GetAllProducts, auth.AuthMiddleware())
-	svc.Server.GET("/discount/:id", svc.GetProductDiscount, auth.AuthMiddleware())
 	svc.Server.POST("/checkout", svc.PostCheckout, auth.AuthMiddleware())
 
 	if ok := ALLOW_DOCS_MODES[svc.Config.Environment]; ok {
