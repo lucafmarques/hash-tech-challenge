@@ -13,12 +13,12 @@ This project contains the `checkout` service responsible for creating a checkout
 
 ```mermaid
 flowchart LR
+    D[consumer] <---> checkout 
     subgraph checkout
-        direction LR
-        server{{server}} <-.-> repository[/repository\]
+        A{{server}} -.-> B[(repository)]
     end
     
-    server <---> discount{discount}
+    A ---> C[[discount]]
 ```
 
 ## Sequence Diagram
@@ -31,7 +31,7 @@ sequenceDiagram
     participant repository
     consumer->>checkout: request checkout with cart of products
     checkout->repository: fetch products data
-    loop Each product
+    loop each product
         checkout->>discount: request discount
         alt is up
             discount->>checkout: provide discount
@@ -42,7 +42,7 @@ sequenceDiagram
 
     checkout->>consumer: respond with checkout order
 
-    opt Blackfriday
-        Note left of checkout: Include blackfriday gift  
+    opt is blackfriday
+        Note left of checkout: Include a blackfriday gift  
     end
 ```

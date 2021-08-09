@@ -80,6 +80,8 @@ func (svc *Service) Stop() {
 }
 
 func (svc *Service) RegisterRoutes() {
+	svc.Server.GET("/products", svc.GetAllProducts, auth.AuthMiddleware())
+	svc.Server.GET("/discount/:id", svc.GetProductDiscount, auth.AuthMiddleware())
 	svc.Server.POST("/checkout", svc.PostCheckout, auth.AuthMiddleware())
 
 	if ok := ALLOW_DOCS_MODES[svc.Config.Environment]; ok {

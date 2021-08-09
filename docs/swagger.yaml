@@ -1,0 +1,12 @@
+info:
+  contact:
+    email: lucafmarqs@gmail.com
+    name: Luca F. Marques
+  description: API for receiving cart info and generating a checkout order with proper
+    discounts received by calling Discount service.
+  license:
+    name: MIT
+  title: Hash's Checkout API
+  version: 1.0.0
+paths: {}
+swagger: "2.0"

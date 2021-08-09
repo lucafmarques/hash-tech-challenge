@@ -1,0 +1,16 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for receiving cart info and generating a checkout order with proper discounts received by calling Discount service.",
+        "title": "Hash's Checkout API",
+        "contact": {
+            "name": "Luca F. Marques",
+            "email": "lucafmarqs@gmail.com"
+        },
+        "license": {
+            "name": "MIT"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {}
+}
