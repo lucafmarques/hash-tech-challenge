@@ -40,6 +40,7 @@ var doc = `{
                     "application/json"
                 ],
                 "summary": "Calculate Checkout",
+                "operationId": "Checkout",
                 "parameters": [
                     {
                         "description": "Cart of products",
@@ -141,6 +142,13 @@ var doc = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

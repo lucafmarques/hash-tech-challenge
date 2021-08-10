@@ -62,6 +62,7 @@ paths:
       consumes:
       - application/json
       description: Calculate Checkout for cart of products
+      operationId: Checkout
       parameters:
       - description: Cart of products
         in: body
@@ -81,4 +82,9 @@ paths:
           schema:
             $ref: '#/definitions/checkout.HTTPError'
       summary: Calculate Checkout
+securityDefinitions:
+  "":
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

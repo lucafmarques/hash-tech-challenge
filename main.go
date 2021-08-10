@@ -19,6 +19,9 @@ import (
 // @contact.name Luca F. Marques
 // @contact.email lucafmarqs@gmail.com
 // @license.name MIT
+// @securityDefinitions.apikey
+// @in header
+// @name Authorization
 
 func main() {
 	config := config.NewConfig()

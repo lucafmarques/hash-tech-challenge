@@ -23,6 +23,7 @@
                     "application/json"
                 ],
                 "summary": "Calculate Checkout",
+                "operationId": "Checkout",
                 "parameters": [
                     {
                         "description": "Cart of products",
@@ -124,6 +125,13 @@
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }
