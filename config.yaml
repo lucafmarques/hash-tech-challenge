@@ -1,10 +1,10 @@
 service:
   port: :8080
-  timeout: 10
+  timeout: 4
   core:
     black_friday_date: 08/08
 
 discount:
   host: discount:50051
-  timeout: 10
+  timeout: 4
 

@@ -34,6 +34,22 @@ type Config struct {
 	Repository RepositoryConfig `yaml:"repository,omitempty"`
 }
 
+const DEVELOPMENT = "DEVELOPMENT"
+const STAGING = "STAGING"
+const PRODUCTION = "PRODUCTION"
+
+func NewConfig() Config {
+	return Config{
+		Service: ServiceConfig{
+			Timeout:     1,
+			Environment: DEVELOPMENT,
+		},
+		Discount: DiscountConfig{
+			Timeout: 1,
+		},
+	}
+}
+
 func (c *Config) LoadFromEnv(env, path string) error {
 	envPath := os.Getenv(env)
 	if envPath == "" {

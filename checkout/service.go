@@ -18,9 +18,9 @@ import (
 )
 
 var ALLOW_DOCS_MODES = map[string]bool{
-	"DEVELOPMENT": true,
-	"STAGING":     true,
-	"PRODUCTION":  false,
+	config.DEVELOPMENT: true,
+	config.STAGING:     true,
+	config.PRODUCTION:  false,
 }
 
 type Service struct {
