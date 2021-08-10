@@ -18,9 +18,9 @@ import (
 )
 
 var ALLOW_DOCS_MODES = map[string]bool{
-	"PRODUCTION":  true,
+	"DEVELOPMENT": true,
 	"STAGING":     true,
-	"DEVELOPMENT": false,
+	"PRODUCTION":  false,
 }
 
 type Service struct {
@@ -45,11 +45,7 @@ func NewCheckoutService(config config.ServiceConfig, client discount.DiscountCli
 
 	return &Service{
 		Server: *server,
-		Core: Core{
-			Client:     client,
-			Repository: repo,
-			Config:     config.Core,
-		},
+		Core:   NewCore(config.Core, client, repo),
 		Config: config,
 	}
 }

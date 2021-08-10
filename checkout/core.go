@@ -17,6 +17,14 @@ type Core struct {
 	Client     discount.DiscountClient
 }
 
+func NewCore(config config.CoreConfig, client discount.DiscountClient, repo repository.Repository) Core {
+	return Core{
+		Config:     config,
+		Repository: repo,
+		Client:     client,
+	}
+}
+
 func (c Core) AllProducts() (*[]repository.Product, error) {
 	products, err := c.Repository.GetAllProducts()
 	if err != nil {
@@ -44,8 +52,9 @@ func (c Core) CalculateDiscountPercentage(ctx context.Context, id int) float32 {
 }
 
 func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []ProductRequest) ([]ProductResponse, int, int) {
+	response := []ProductResponse{}
+
 	var (
-		response      []ProductResponse
 		totalAmount   int
 		totalDiscount int
 	)
