@@ -28,3 +28,7 @@ type ProductRequest struct {
 type DiscountResponse struct {
 	Percentage float32 `json:"percentage"`
 }
+
+type HTTPError struct {
+	Message string `json:"message"`
+}

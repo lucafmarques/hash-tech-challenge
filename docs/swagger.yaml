@@ -1,3 +1,51 @@
+definitions:
+  checkout.CheckoutRequest:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/checkout.ProductRequest'
+        type: array
+    type: object
+  checkout.CheckoutResponse:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/checkout.ProductResponse'
+        type: array
+      total_amount:
+        type: integer
+      total_amount_with_discount:
+        type: integer
+      total_discount:
+        type: integer
+    type: object
+  checkout.HTTPError:
+    properties:
+      message:
+        type: string
+    type: object
+  checkout.ProductRequest:
+    properties:
+      id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  checkout.ProductResponse:
+    properties:
+      discount:
+        type: integer
+      id:
+        type: integer
+      is_gift:
+        type: boolean
+      quantity:
+        type: integer
+      total_amount:
+        type: integer
+      unit_amount:
+        type: integer
+    type: object
 info:
   contact:
     email: lucafmarqs@gmail.com
@@ -8,5 +56,29 @@ info:
     name: MIT
   title: Hash's Checkout API
   version: 1.0.0
-paths: {}
+paths:
+  /checkout:
+    post:
+      consumes:
+      - application/json
+      description: Calculate Checkout for cart of products
+      parameters:
+      - description: Cart of products
+        in: body
+        name: cart
+        required: true
+        schema:
+          $ref: '#/definitions/checkout.CheckoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/checkout.CheckoutResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/checkout.HTTPError'
+      summary: Calculate Checkout
 swagger: "2.0"

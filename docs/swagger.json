@@ -12,5 +12,118 @@
         },
         "version": "1.0.0"
     },
-    "paths": {}
+    "paths": {
+        "/checkout": {
+            "post": {
+                "description": "Calculate Checkout for cart of products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Calculate Checkout",
+                "parameters": [
+                    {
+                        "description": "Cart of products",
+                        "name": "cart",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/checkout.CheckoutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/checkout.CheckoutResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/checkout.HTTPError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "checkout.CheckoutRequest": {
+            "type": "object",
+            "properties": {
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/checkout.ProductRequest"
+                    }
+                }
+            }
+        },
+        "checkout.CheckoutResponse": {
+            "type": "object",
+            "properties": {
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/checkout.ProductResponse"
+                    }
+                },
+                "total_amount": {
+                    "type": "integer"
+                },
+                "total_amount_with_discount": {
+                    "type": "integer"
+                },
+                "total_discount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "checkout.HTTPError": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "checkout.ProductRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "checkout.ProductResponse": {
+            "type": "object",
+            "properties": {
+                "discount": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_gift": {
+                    "type": "boolean"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "total_amount": {
+                    "type": "integer"
+                },
+                "unit_amount": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }
