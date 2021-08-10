@@ -45,11 +45,7 @@ func NewCheckoutService(config config.ServiceConfig, client discount.DiscountCli
 
 	return &Service{
 		Server: *server,
-		Core: Core{
-			Client:     client,
-			Repository: repo,
-			Config:     config.Core,
-		},
+		Core:   NewCore(config.Core, client, repo),
 		Config: config,
 	}
 }
@@ -80,8 +76,6 @@ func (svc *Service) Stop() {
 }
 
 func (svc *Service) RegisterRoutes() {
-	svc.Server.GET("/products", svc.GetAllProducts, auth.AuthMiddleware())
-	svc.Server.GET("/discount/:id", svc.GetProductDiscount, auth.AuthMiddleware())
 	svc.Server.POST("/checkout", svc.PostCheckout, auth.AuthMiddleware())
 
 	if ok := ALLOW_DOCS_MODES[svc.Config.Environment]; ok {
