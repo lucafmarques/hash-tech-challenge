@@ -52,5 +52,5 @@ func TestNewDiscountConn(t *testing.T) {
 
 	conn, _, err := NewDiscountConn(config, opts)
 	assert.Nil(t, err, "Failed asserting non-error when creating connection")
-	assert.IsType(t, conn, &grpc.ClientConn{}, "Failed asserting conn type")
+	assert.IsType(t, &grpc.ClientConn{}, conn, "Failed asserting conn type")
 }
