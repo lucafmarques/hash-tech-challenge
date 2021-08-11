@@ -2,7 +2,6 @@ package checkout
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/labstack/gommon/log"
@@ -23,15 +22,6 @@ func NewCore(config config.CoreConfig, client discount.DiscountClient, repo repo
 		Repository: repo,
 		Client:     client,
 	}
-}
-
-func (c Core) AllProducts() (*[]repository.Product, error) {
-	products, err := c.Repository.GetAllProducts()
-	if err != nil {
-		return nil, fmt.Errorf("failed fetching products: %v", err.Error())
-	}
-
-	return products, nil
 }
 
 func (c Core) CalculateDiscountPercentage(ctx context.Context, id int) float32 {

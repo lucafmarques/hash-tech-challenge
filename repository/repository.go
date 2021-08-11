@@ -16,7 +16,6 @@ var data []byte
 type Repository interface {
 	GetProduct(id int) (*Product, error)
 	GetRandomGift() (*Product, error)
-	GetAllProducts() (*[]Product, error)
 	GetProductsByIds(ids []int) (map[int]*Product, error)
 }
 
@@ -72,16 +71,6 @@ func (repo Embed) GetProduct(id int) (*Product, error) {
 	}
 
 	return &product, nil
-}
-
-func (repo Embed) GetAllProducts() (*[]Product, error) {
-	var products []Product
-
-	for _, p := range repo.data {
-		products = append(products, p)
-	}
-
-	return &products, nil
 }
 
 func (repo Embed) GetRandomGift() (*Product, error) {
