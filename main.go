@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
 	"log"
 	"time"
 
@@ -11,6 +10,7 @@ import (
 	"gitlab.com/lucafmarques/hash-test/config"
 	"gitlab.com/lucafmarques/hash-test/discount"
 	"gitlab.com/lucafmarques/hash-test/repository"
+	"google.golang.org/grpc"
 )
 
 // @title Hash's Checkout API
@@ -29,8 +29,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
-	fmt.Print(config)
-	conn, cancel, err := discount.NewDiscountConn(config.Discount)
+
+	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
+	conn, cancel, err := discount.NewDiscountConn(config.Discount, opts)
 	if err != nil {
 		log.Fatalf("failed creating discount grpc conn: %v", err)
 	}

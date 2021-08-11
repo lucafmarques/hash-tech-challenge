@@ -14,10 +14,9 @@ type Discount struct {
 	Config config.DiscountConfig
 }
 
-func NewDiscountConn(config config.DiscountConfig) (*grpc.ClientConn, context.CancelFunc, error) {
+func NewDiscountConn(config config.DiscountConfig, opts []grpc.DialOption) (*grpc.ClientConn, context.CancelFunc, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(config.Timeout))
 
-	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
 	conn, err := grpc.DialContext(ctx, config.Host, opts...)
 	if err != nil {
 		cancel()
