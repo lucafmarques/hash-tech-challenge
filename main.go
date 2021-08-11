@@ -2,7 +2,9 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/labstack/echo/v4/middleware"
 	"gitlab.com/lucafmarques/hash-test/checkout"
@@ -17,14 +19,17 @@ import (
 // @contact.name Luca F. Marques
 // @contact.email lucafmarqs@gmail.com
 // @license.name MIT
+// @securityDefinitions.apikey
+// @in header
+// @name Authorization
 
 func main() {
-	config := &config.Config{}
+	config := config.NewConfig()
 	err := config.LoadFromEnv("CONFIG_PATH", "config.yaml")
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
-
+	fmt.Print(config)
 	conn, cancel, err := discount.NewDiscountConn(config.Discount)
 	if err != nil {
 		log.Fatalf("failed creating discount grpc conn: %v", err)
@@ -41,7 +46,9 @@ func main() {
 	svc := checkout.NewCheckoutService(config.Service, client, repo)
 	defer svc.Stop()
 
-	svc.ApplyMiddlewares(middleware.Logger(), middleware.Recover())
+	svc.ApplyMiddlewares(middleware.Logger(), middleware.Recover(), middleware.TimeoutWithConfig(middleware.TimeoutConfig{
+		Timeout: time.Second * time.Duration(config.Service.Timeout),
+	}))
 	svc.RegisterRoutes()
 
 	svc.Start()

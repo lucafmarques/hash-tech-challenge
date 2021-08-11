@@ -42,8 +42,9 @@ func (c Core) CalculateDiscountPercentage(ctx context.Context, id int) float32 {
 }
 
 func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []ProductRequest) ([]ProductResponse, int, int) {
+	response := []ProductResponse{}
+
 	var (
-		response      []ProductResponse
 		totalAmount   int
 		totalDiscount int
 	)
