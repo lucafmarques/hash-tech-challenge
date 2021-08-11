@@ -16,11 +16,14 @@ run:
 
 ## Runs test suite
 test:
-	@go test -v
+	@go test -v ./...
 
 ## Runs test suite and outputs coverage
 coverage:
-	@go test -cover
+	@go test --coverprofile=coverage.out.tmp ./...
+	@cat coverage.out.tmp | grep -v "pb.go" > coverage.out
+	@go tool cover -func=coverage.out
+	@rm coverage.out*
 
 ## Builds docs, starts server and Swagger
 docs:

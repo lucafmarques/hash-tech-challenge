@@ -11,7 +11,7 @@ checkout_test:
   except:
     - tags
   script:
-    - make test
+    - make coverage
   
 checkout_build:
   stage: build
