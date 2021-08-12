@@ -54,3 +54,14 @@ func TestNewDiscountConn(t *testing.T) {
 	assert.Nil(t, err, "Failed asserting non-error when creating connection")
 	assert.IsType(t, &grpc.ClientConn{}, conn, "Failed asserting conn type")
 }
+
+func TestNewDiscountConnError(t *testing.T) {
+	config := config.DiscountConfig{
+		Host:    host,
+		Timeout: 10,
+	}
+
+	conn, _, err := NewDiscountConn(config, nil)
+	assert.Error(t, err, "Failed asserting error when creating connection")
+	assert.Nil(t, conn, "Failed asserting conn type")
+}
