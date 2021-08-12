@@ -42,6 +42,12 @@ This will build the project and run all necessary services (`checkout` and `disc
 
 Yup, that's it!
 
+## API Documentation
+
+API documentation (Swagger 2.0) can be found by going to [`localhost:8080/docs/index.html`](https://localhost:8080/docs/index.html).
+
+Keep in kind that a Swagger page will only be provided if the service environment is set to either `DEVELOPMENT` or `STAGING` in the configuration file.
+
 ## Configuration
 
 Our `checkout` service has a config file named [`config.yaml`](config.config/yaml), it's structured like so:
@@ -51,7 +57,7 @@ service:
     timeout: 10 # timeout for requests to service
     environment: "DEVELOPMENT" # environment the service will be running [enum:DEVELOPMENT, STAGING, PRODUCTION]
     core:
-        black_friday_date: 08/08 # date for BlackFriday gifts [format:DD/MM]
+        black_friday_date: "08/08" # date for BlackFriday gifts [format:DD/MM]
 
 discount:
     host: discount:50051 # address of the discount service
