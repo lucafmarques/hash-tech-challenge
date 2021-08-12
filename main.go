@@ -25,7 +25,7 @@ import (
 
 func main() {
 	config := config.NewConfig()
-	err := config.LoadFromEnv("CONFIG_PATH", "config.yaml")
+	err := config.LoadFromEnv("CONFIG_PATH", "config/config.yaml")
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}

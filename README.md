@@ -44,7 +44,7 @@ Yup, that's it!
 
 ## Configuration
 
-Our `checkout` service has a config file named [`config.yaml`](config.yaml), it's structured like so:
+Our `checkout` service has a config file named [`config.yaml`](config.config/yaml), it's structured like so:
 ```yaml
 service:
     port: :8080 # port for the service to bind to
@@ -64,7 +64,9 @@ repository: # [optional]
 
 One last bit of configuration is the services `API_KEYS`, which can be set through env-vars, although a default is provided through [`docker-compose`](docker-compose.yml).
 
-The project provides a base [`config.yaml`](config.yaml) that is enough to run both services via `docker-compose`.
+The project provides a base [`config.yaml`](config/config.yaml) that is enough to run both services via `docker-compose`.
+
+If providing a custom config file, the path to it can be changed using the `CONFIG_FILE` env-var, if one's not found at the provided path the default [`config.yaml`](config/config.yaml) is used.
 
 ## Design Decisions
 
