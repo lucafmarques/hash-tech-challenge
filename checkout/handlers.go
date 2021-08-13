@@ -26,7 +26,7 @@ func (svc *Service) PostCheckout(c echo.Context) error {
 
 	data := CheckoutRequest{}
 	if err := c.Bind(&data); err != nil {
-		log.Warnf("Failed to unmarshal reques data into %T: %v", data, err)
+		log.Warnf("Failed to unmarshal request data into %T: %v", data, err)
 		return ErrInvalidPayload
 	}
 
