@@ -108,7 +108,7 @@ func TestCalculateCheckout(t *testing.T) {
 	}
 	expectedTotalAmount := sum(products)
 	expectedTotalDiscount := int(float32(sum(products)) * perc)
-	resp, totalAmount, totalDiscount := core.CalculateCheckout(ctx, request)
+	resp, totalAmount, totalDiscount, _ := core.CalculateCheckout(ctx, request)
 
 	assert.Equal(t, len(products), len(resp), "Failed asserting that response has the same amount of products as we requested")
 	assert.Equal(t, expectedTotalAmount, totalAmount, "Failed asserting that totalAmount is the same as sum of products amount")
@@ -157,11 +157,49 @@ func TestCalculateCheckoutNotAllRequestedProductsExist(t *testing.T) {
 	}
 	expectedTotalAmount := sum(someProducts)
 	expectedTotalDiscount := int(float32(sum(someProducts)) * perc)
-	resp, totalAmount, totalDiscount := core.CalculateCheckout(ctx, request)
+	resp, totalAmount, totalDiscount, _ := core.CalculateCheckout(ctx, request)
 
 	assert.Equal(t, len(someProducts), len(resp), "Failed asserting that response has the same amount of products as we requested")
 	assert.Equal(t, expectedTotalAmount, totalAmount, "Failed asserting that totalAmount is the same as sum of products amount")
 	assert.Equal(t, expectedTotalDiscount, totalDiscount, "Failed asserting that totalDiscount is equal to totalAmount * fixed percentage")
+}
+
+func TestCalculateCheckoutSingleGift(t *testing.T) {
+	ctx := context.Background()
+
+	var request []ProductRequest
+	var products []*repository.Product
+
+	perc := float32(0.05)
+	ids := []int{0, 1, 2, 3, 4, 5, 6}
+
+	for _, id := range ids {
+		request = append(request, ProductRequest{
+			ID:       id,
+			Quantity: 1,
+		})
+		products = append(products, &repository.Product{
+			ID:     id,
+			Amount: id * 100,
+			Gift:   true,
+		})
+	}
+
+	core := Core{
+		Repository: mocks.MockRepository{
+			Products: products,
+		},
+		Client: mocks.MockDiscountClient{
+			Resp: &discount.GetDiscountResponse{
+				Percentage: perc,
+			},
+		},
+	}
+	resp, totalAmount, totalDiscount, _ := core.CalculateCheckout(ctx, request)
+
+	assert.Equal(t, 1, len(resp), "Failed asserting that response has the same amount of products as we requested")
+	assert.Equal(t, 0, totalAmount, "Failed asserting that totalAmount is the same as sum of products amount")
+	assert.Equal(t, 0, totalDiscount, "Failed asserting that totalDiscount is equal to totalAmount * fixed percentage")
 }
 
 func TestBuildIdsList(t *testing.T) {

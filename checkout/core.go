@@ -42,10 +42,11 @@ func (c Core) CalculateDiscountPercentage(ctx context.Context, id int) float32 {
 	return percentage
 }
 
-func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []ProductRequest) ([]ProductResponse, int, int) {
+func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []ProductRequest) ([]ProductResponse, int, int, bool) {
 	var (
 		totalAmount   int
 		totalDiscount int
+		hasGift       bool
 		wg            sync.WaitGroup
 	)
 
@@ -66,6 +67,10 @@ func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []Product
 			log.Warnf("No product data exists for ID=%v", r.ID)
 			continue
 		}
+		if product.Gift && hasGift {
+			log.Info("Checkout car already has a gift, skipping product")
+			continue
+		}
 
 		productResponse := &ProductResponse{
 			Discount:    0,
@@ -74,6 +79,10 @@ func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []Product
 			UnitAmount:  product.Amount,
 			TotalAmount: product.Amount * r.Quantity,
 			Gift:        product.Gift,
+		}
+
+		if product.Gift {
+			hasGift = true
 		}
 
 		wg.Add(1)
@@ -92,7 +101,7 @@ func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []Product
 		response = append(response, p)
 	}
 
-	return response, totalAmount, totalDiscount
+	return response, totalAmount, totalDiscount, hasGift
 }
 
 func (c Core) BuildIdsList(products []ProductRequest) []int {

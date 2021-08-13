@@ -30,11 +30,13 @@ func (svc *Service) PostCheckout(c echo.Context) error {
 		return ErrInvalidPayload
 	}
 
-	discounts, totalAmount, totalDiscount := svc.Core.CalculateCheckout(ctx, data.Products)
+	discounts, totalAmount, totalDiscount, hasGift := svc.Core.CalculateCheckout(ctx, data.Products)
 
-	gift, ok := svc.Core.BlackFridayGift()
-	if ok {
-		discounts = append(discounts, *gift)
+	if !hasGift {
+		gift, ok := svc.Core.BlackFridayGift()
+		if ok {
+			discounts = append(discounts, *gift)
+		}
 	}
 
 	response := CheckoutResponse{
