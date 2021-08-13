@@ -76,6 +76,7 @@ If providing a custom config file, the path to it can be changed using the `CONF
 
 ## Design Decisions
 
+- When fetching product discount, the service does concurrent requests to the `discount` service; 
 - Since specified in the challenge, no database is used for the service, although it offers a `Repository` interface for extendability. The default implementation uses Go's `//go:embed` directive to load data from the `products.json` file on init, this is why a repository host in the config file is optional for now;
 - No cache was implemented between the services, but for Production it could be useful;
 - A simple API Key implementation is in place, and as previously mentioned, keys can be customized through the `API_KEYS` env-var. In a production server we could use OAuth2 + JWT.
