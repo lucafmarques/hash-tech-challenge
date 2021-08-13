@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/lucafmarques/hash-test/config"
@@ -39,6 +40,7 @@ func init() {
 }
 
 func dialer(context.Context, string) (net.Conn, error) {
+	time.Sleep(10 * time.Millisecond)
 	return list.Dial()
 }
 
