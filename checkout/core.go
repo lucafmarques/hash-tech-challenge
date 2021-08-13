@@ -2,6 +2,7 @@ package checkout
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/labstack/gommon/log"
@@ -42,12 +43,14 @@ func (c Core) CalculateDiscountPercentage(ctx context.Context, id int) float32 {
 }
 
 func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []ProductRequest) ([]ProductResponse, int, int) {
-	response := []ProductResponse{}
-
 	var (
 		totalAmount   int
 		totalDiscount int
+		wg            sync.WaitGroup
 	)
+
+	response := []ProductResponse{}
+	ch := make(chan ProductResponse, len(requestedProducts))
 
 	products, err := c.Repository.GetProductsByIds(c.BuildIdsList(requestedProducts))
 	if err != nil {
@@ -73,12 +76,20 @@ func (c Core) CalculateCheckout(ctx context.Context, requestedProducts []Product
 			Gift:        product.Gift,
 		}
 
-		percentage := c.CalculateDiscountPercentage(ctx, r.ID)
-		productResponse.Discount = int(float32(product.Amount) * percentage)
+		wg.Add(1)
+		go func(id int, p ProductResponse, ctx context.Context) {
+			p.Discount = int(float32(p.UnitAmount) * c.CalculateDiscountPercentage(ctx, id))
+			ch <- p
+			wg.Done()
+		}(r.ID, *productResponse, ctx)
+	}
+	wg.Wait()
+	close(ch)
 
-		totalAmount += productResponse.TotalAmount
-		totalDiscount += productResponse.Discount
-		response = append(response, *productResponse)
+	for p := range ch {
+		totalAmount += p.TotalAmount
+		totalDiscount += p.Discount
+		response = append(response, p)
 	}
 
 	return response, totalAmount, totalDiscount
