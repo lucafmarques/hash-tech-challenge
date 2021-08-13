@@ -46,11 +46,14 @@ func TestLoadFromEnvPathError(t *testing.T) {
 
 func TestLoadFromEnvWrongConfig(t *testing.T) {
 	config := Config{}
-	path := "temp_test_config.wrong"
-	ioutil.TempFile("config", path)
+	path := "temp_test_config.yaml"
+	f, _ := ioutil.TempFile("", path)
+	f.Write([]byte(`
+	service:
+		core: "Not actual Core structure"
+	`))
 	defer os.Remove(path)
 
-	err := config.LoadFromEnv("INEXISTENT_ENV", path)
-
+	err := config.LoadFromEnv("INEXISTENT_ENV", f.Name())
 	assert.Error(t, err, "Failed asserting error loading config")
 }
