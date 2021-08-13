@@ -3,7 +3,7 @@ stages:
   - build
 
 variables:
-  CHECKOUT: registry.gitlab.com/lucafmarques/hash-test
+  CHECKOUT: registry.gitlab.com/lucafmarques/hash-tech-challenge
 
 .go-cache:
   variables:
@@ -30,8 +30,7 @@ checkout_build:
     - tags
   services:
     - docker:dind
-  before_script:
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
   script:
-    - docker build -t $CHECKOUT:$CI_COMMIT_TAG -f dockerfile checkout
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CHECKOUT:$CI_COMMIT_TAG -f dockerfile .
     - docker push $CHECKOUT:$CI_COMMIT_TAG
