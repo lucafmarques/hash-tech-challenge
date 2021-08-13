@@ -41,6 +41,20 @@ func TestCalculateDiscountPercentage(t *testing.T) {
 	assert.Equal(t, perc, result, "Failed asserting calculated discount percentage")
 }
 
+func TestCalculateDiscountPercentageFailedDiscountRequest(t *testing.T) {
+	ctx := context.Background()
+
+	core := Core{
+		Config: config.CoreConfig{},
+		Client: mocks.MockDiscountClient{
+			Err: errors.New("Some error"),
+		},
+	}
+
+	result := core.CalculateDiscountPercentage(ctx, 0)
+	assert.Equal(t, float32(0), result, "Failed asserting calculated discount percentage")
+}
+
 func TestCalculateDiscountPercentageNoProductWithId(t *testing.T) {
 	ctx := context.Background()
 
