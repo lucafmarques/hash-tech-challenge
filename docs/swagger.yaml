@@ -62,7 +62,6 @@ paths:
       consumes:
       - application/json
       description: Calculate Checkout for cart of products
-      operationId: Checkout
       parameters:
       - description: Cart of products
         in: body

@@ -40,7 +40,6 @@ var doc = `{
                     "application/json"
                 ],
                 "summary": "Calculate Checkout",
-                "operationId": "Checkout",
                 "parameters": [
                     {
                         "description": "Cart of products",
