@@ -91,7 +91,7 @@ sequenceDiagram
     participant repository
     consumer->>checkout: request checkout with cart of products
     checkout->repository: fetch products data
-    loop each product
+    loop concurrently
         checkout->>discount: request discount
         alt is up
             discount->>checkout: provide discount
