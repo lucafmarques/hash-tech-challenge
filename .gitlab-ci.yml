@@ -5,9 +5,19 @@ stages:
 variables:
   CHECKOUT: registry.gitlab.com/lucafmarques/hash-test
 
+.go-cache:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  before_script:
+    - mkdir -p .go
+  cache:
+    paths:
+      - .go/pkg/mod/
+
 checkout_test:
   stage: test
   image: golang:1.16
+  extends: .go-cache
   except:
     - tags
   script:
